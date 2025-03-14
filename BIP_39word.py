@@ -17,9 +17,14 @@ def get_word_from_weights(weights, wordlist):
         return total, "[无效权位总和：超出单词表范围]"
 
 def main():
+    # 定义允许的权位集合
+    allowed_set = {1, 2, 4, 8, 16, 32, 64, 256, 512, 1024}
+    
+    # 加载 BIP39 单词表
     wordlist = load_wordlist()
-    print("请输入一组权位数字（使用逗号分隔），表示各个位的权重相加的值，程序将该总和视作 BIP39 助记词的索引。")
-    print("例如：输入 '1,2,4,8,16' 将得到 1+2+4+8+16=31，对应单词表中索引 31 的单词。")
+    
+    print("请输入一组权位数字（仅允许以下数字：1,2,4,8,16,32,64,256,512,1024），")
+    print("数字间以逗号分隔。例如：输入 '1,2,4,8,16' 将得到 1+2+4+8+16=31，对应单词表中索引 31 的单词。")
     print("输入空行退出。")
     
     while True:
@@ -29,6 +34,11 @@ def main():
         try:
             # 解析输入，转换为整数列表
             weights = [int(x.strip()) for x in user_input.split(",") if x.strip() != ""]
+            # 检查输入数字是否都在允许的集合内
+            if not all(num in allowed_set for num in weights):
+                print("输入的数字必须是以下这些之一：1, 2, 4, 8, 16, 32, 64, 256, 512, 1024")
+                continue
+            
             total, word = get_word_from_weights(weights, wordlist)
             print(f"权位总和为 {total}，对应的助记词为：{word}")
         except ValueError:
